@@ -8,12 +8,14 @@ namespace Disciples
 {
     class Dude
     {
-        public Dude(int h,int d,string n)
+        public Dude(int h,int d,string n,char s)
         {
             Hp = h;
             Damage = d;
             Name = n;
+            Show = s;
         }
+        public char Show;
         public int Hp;
         public int Damage;
         public string Name;

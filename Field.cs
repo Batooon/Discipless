@@ -8,5 +8,6 @@ namespace Disciples
 {
     class Field
     {
+
     }
 }

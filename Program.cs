@@ -10,15 +10,11 @@ namespace Disciples
     {
         static void Init()
         {
-            Dude player = new Dude(200,100,"Pidor");
-            Dude enemy = new Dude(100, 10, "Рикардо Милос епт");
-
-            player.Init();
-            enemy.Init();
-            player.Attack(enemy);
-
-            List<Dude> enemies = new List<Dude>();
-            enemies.Add(enemy);
+            /*Foes enemies = new Foes();
+            enemies.Draw();*/
+            RandomEnemyName name = new RandomEnemyName();
+            name.Read();
+            name.Show();
         }
         static void Main(string[] args)
         {
