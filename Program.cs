@@ -16,6 +16,9 @@ namespace Disciples
             player.Init();
             enemy.Init();
             player.Attack(enemy);
+
+            List<Dude> enemies = new List<Dude>();
+            enemies.Add(enemy);
         }
         static void Main(string[] args)
         {
