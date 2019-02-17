@@ -10,20 +10,23 @@ namespace Disciples
     {
         List<Dude> foes;
 
-        public Foes()
+        public Foes(int N)//N - количество врагов
         {
             foes = new List<Dude>();
-            Dude enemy1 = new Dude(100, 20, "Лох", '*');
-            Dude enemy2 = new Dude(100, 20, "Лошара", '*');
-            Dude enemy3 = new Dude(100, 20, "Какашка", '*');
-            foes.Add(enemy1);
-            foes.Add(enemy2);
-            foes.Add(enemy3);
+
+            for(int i = 0; i < N; i++)
+            {
+                foes.Add(new Dude(Randomchik.Next(90, 110), Randomchik.Next(15, 25), '*'));
+            }
         }
-        public void Draw()
+        public void Draw()//Вывод всех врагов на поле
         {
             foreach(Dude d in foes)
-                d.Init();
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
         }
     }
 }

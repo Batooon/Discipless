@@ -12,9 +12,10 @@ namespace Disciples
         {
             /*Foes enemies = new Foes();
             enemies.Draw();*/
-            RandomEnemyName name = new RandomEnemyName();
-            name.Read();
-            name.Show();
+            Field field = new Field();
+            field.ShowCoordinates();
+            /*Foes enemies = new Foes(4);
+            enemies.Draw();*/
         }
         static void Main(string[] args)
         {

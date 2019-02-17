@@ -8,36 +8,27 @@ namespace Disciples
 {
     class Dude
     {
-        public Dude(int h,int d,string n,char s)
+        public Dude(int h,int d,char s)
         {
             Hp = h;
             Damage = d;
-            Name = n;
             Show = s;
         }
         public char Show;
         public int Hp;
         public int Damage;
-        public string Name;
 
-        public void Init()
-        {
-            Console.WriteLine("Hello, my name is " + Name +
-                "\nHealth = " + Hp +
-                "\nDamage = " + Damage);
-            Console.WriteLine();
-        }
         public void Death(Dude dead)
         {
-            Console.WriteLine(dead.Name + " подох");
+            Console.WriteLine(/*dead.Name + " подох"*/);
         }
         public void Attack(Dude aim)
         {
-            aim.Hp -= Damage;
+            /*aim.Hp -= Damage;
             if (aim.Hp <= 0)
                 Death(aim);
             else
-                aim.Init();
+                aim.Init();*/
         }
     }
 }
