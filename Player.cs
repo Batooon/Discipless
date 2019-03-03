@@ -6,25 +6,28 @@ using System.Threading.Tasks;
 
 namespace Disciples
 {
-    class Foes:Dude
+    class Player:Dude
     {
-        //public List<Foes> foes;
-        readonly int numberOfEnemies;
-
-        public Foes(int N,int x,int y,int hp,int dmg,char sym)//N - количество врагов
+        public int score = 0;
+        public Player(int x,int y,int hp,int dmg,char sym)
         {
-            numberOfEnemies = N;
             X = x;
             Y = y;
             Hp = hp;
             Damage = dmg;
             Show = sym;
-            //foes = new List<Foes>();
         }
 
         public void Draw()
         {
             Console.Write(Show);
+        }
+
+        public void ShowScore()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Score: " + score);
+            Console.ForegroundColor = ConsoleColor.Black;
         }
 
         public void MoveTo(int x,int y)

@@ -8,39 +8,25 @@ namespace Disciples
 {
     class Field
     {
-        char[,] field;
-        const int x = 8, y = 8;
-        int number = 1;
+        public char[,] field;
+        public int x = 8, y = 8;
+        public int number = 1;
 
         public Field()
         {
             field = new char[x, y];
-
-            for(int i = 0; i < y; i++)
-            {
-                for(int j = 0; j < x; j++)
-                {
-                    field[i, j] = '#';
-                }
-            }
-
-            for(int i = 0; i < y; i++)
-            {
-                for(int j = 0; j < x; j++)
-                {
-                    Console.Write(field[i, j]);
-                }
-                Console.WriteLine();
-            }
+            //GenerateField();
+            ShowCoordinates();
         }
+
         public void ShowCoordinates()
         {
-            for (int i = 0; i < y; i++)
+            for (int i = 0; i < x; i++)
                 Console.Write((char)('A' + i));
 
-            for (int j = 0; j < x; j++)
+            for (int j = 0; j < y; j++)
             {
-                Console.SetCursorPosition(8, j);
+                Console.SetCursorPosition(y, j+1);
                 Console.Write(number);
                 number++;
             }
