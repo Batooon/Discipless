@@ -47,7 +47,8 @@ namespace Disciples
             while (!IsEndGame(player,enemy))
             {
                 Input();
-                
+                PlayerUpdate();
+
                 Console.Clear();
                 Draw();
 
@@ -65,7 +66,6 @@ namespace Disciples
         public void Input()
         {
             inputManager.RefreshInput();
-            PlayerUpdate();
         }
 
         public void PlayerUpdate()

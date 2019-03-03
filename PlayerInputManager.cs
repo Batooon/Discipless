@@ -13,11 +13,11 @@ namespace Disciples
 
         public void RefreshInput()
         {
+            int newX = 0, newY = 0;
+
             while (Console.KeyAvailable)
             {
                 ConsoleKey Key = Console.ReadKey().Key;
-
-                int newX = 0, newY = 0;
 
                 switch (Key)
                 {
@@ -34,9 +34,10 @@ namespace Disciples
                         newY++;
                         break;
                 }
-                ChangeX = newX;
-                ChangeY = newY;
             }
+
+            ChangeX = newX;
+            ChangeY = newY;
         }
     }
 }
