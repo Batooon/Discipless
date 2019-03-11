@@ -9,11 +9,9 @@ namespace Disciples
     class Foes:Dude
     {
         //public List<Foes> foes;
-        readonly int numberOfEnemies;
 
-        public Foes(int N,int x,int y,int hp,int dmg,char sym)//N - количество врагов
+        public Foes(int x,int y,int hp,int dmg,char sym)
         {
-            numberOfEnemies = N;
             X = x;
             Y = y;
             Hp = hp;
@@ -26,6 +24,11 @@ namespace Disciples
         {
             Console.Write(Show);
         }
+
+        /*public override bool CanMoveTo(int x, int y)
+        {
+            return base.CanMoveTo(x, y);
+        }*/
 
         public void MoveTo(int x,int y)
         {

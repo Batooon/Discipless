@@ -8,7 +8,6 @@ namespace Disciples
 {
     class Player:Dude
     {
-        public int score = 0;
         public Player(int x,int y,int hp,int dmg,char sym)
         {
             X = x;
@@ -22,18 +21,15 @@ namespace Disciples
         {
             Console.Write(Show);
         }
-
-        public void ShowScore()
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Score: " + score);
-            Console.ForegroundColor = ConsoleColor.Black;
-        }
-
         public void MoveTo(int x,int y)
         {
             X = x;
             Y = y;
         }
+        public void ShowHP()
+        {
+            Console.Write("HP: " + Hp);
+        }
+
     }
 }

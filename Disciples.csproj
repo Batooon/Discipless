@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bonus.cs" />
     <Compile Include="Dude.cs" />
+    <Compile Include="EnemyAI.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Foes.cs" />
     <Compile Include="PlayerInputManager.cs" />
