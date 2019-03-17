@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Disciples
 {
@@ -23,6 +24,7 @@ namespace Disciples
         public Foes enemy;
         public PlayerInputManager inputManager;
         public EnemyAI ai;
+        public Timer timer;
 
         private void Init(GameInitData gameInitData)
         {
@@ -31,9 +33,9 @@ namespace Disciples
             ai = new EnemyAI();
             dude = new Dude();
             field = new Field();
+            timer = new Timer(25, 10);
             Instantiate();
             FieldInit();
-            //bonus = new Bonus(Randomchik.Next(1,2),Random);
 
             player = new Player(7, 7, 200, 20, '@');
 
@@ -41,6 +43,22 @@ namespace Disciples
 
             InitBonus();
         }
+
+        /*private void InitTimer(int seconds)
+        {
+            if (player.IsBonus == true)
+            {
+                for (int s = seconds; s >= seconds; s--)
+                {
+                    Console.SetCursorPosition(10, 10);
+                    if (s == 0)
+                        Console.ForegroundColor = ConsoleColor.Red;
+
+                    Console.Write($"\r{s}");
+                    System.Threading.Thread.Sleep(1000);
+                }
+            }
+        }*/
 
         private void InitEnemy()
         {
@@ -63,7 +81,7 @@ namespace Disciples
                 x = Randomchik.Next(0, field.Width);
                 y = Randomchik.Next(0, field.Height);
             } while (x == player.X && x == enemy.X && y == player.Y && y == enemy.Y);
-            bonus = new Bonus(2, x, y);
+            bonus = new Bonus(x, y);
         }
 
         private void Instantiate()
@@ -93,17 +111,27 @@ namespace Disciples
             Console.WriteLine("You died");
         }
 
-        private bool IsEatBonus()
+        private void ShowTimer()
         {
-            if (player.X == bonus.X && player.Y == bonus.Y && !bonus.Isbonus)
-                return true;
+            while (player.IsBonus == true)
+            {
+                timer.InitTimer(20);
+            }
+            player.IsBonus = false;
+        }
 
-            return false;
+        private void IsEatBonus()
+        {
+            if (player.X == bonus.X && player.Y == bonus.Y)
+            {
+                ShowTimer();
+                player.IsBonus = true;
+            }
         }
 
         private bool IsCatch()
         {
-            if (enemy.X == player.X && enemy.Y == player.Y && !bonus.Isbonus) 
+            if (enemy.X == player.X && enemy.Y == player.Y && !player.IsBonus) 
                 return true;
 
             return false;
@@ -172,20 +200,10 @@ namespace Disciples
                         enemy.Draw();
                         continue;
                     }
-                    else if (i == bonus.X && j == bonus.Y&&!IsEatBonus())
+                    else if (i == bonus.X && j == bonus.Y&&!player.IsBonus)
                     {
-                        bonus.Isbonus = true;
-                        switch (bonus.Id)
-                        {
-                            case 1:
-                                Console.BackgroundColor = ConsoleColor.Green;
-                                Console.ForegroundColor = ConsoleColor.Black;
-                                break;
-                            case 2:
-                                Console.BackgroundColor = ConsoleColor.White;
-                                Console.ForegroundColor = ConsoleColor.Black;
-                                break;
-                        }
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.ForegroundColor = ConsoleColor.Black;
                         bonus.DrawBonus();
                         continue;
                     }

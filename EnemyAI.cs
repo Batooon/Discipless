@@ -27,7 +27,7 @@ namespace Disciples
             else if (f.Y > p.Y)
                 newY -= 1;
 
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(150);
 
                 ChangeX = newX;
                 ChangeY = newY;

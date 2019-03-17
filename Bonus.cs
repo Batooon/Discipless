@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Timers;
 
 namespace Disciples
 {
@@ -11,13 +12,10 @@ namespace Disciples
     {
         public int X;
         public int Y;
-        public bool Isbonus = false;
-        public int Id;
         public char Show = '$';
 
-        public Bonus(int id,int x,int y)
+        public Bonus(int x,int y)
         {
-            Id = id;
             X = x;
             Y = y;
         }
@@ -26,6 +24,15 @@ namespace Disciples
         {
             Console.Write(Show);
         }
+
+        /*public void InitTimer()
+        {
+            Timer timer = new Timer(20);
+            timer.Elapsed += async (sender, e) => await HandleTimer();
+            timer.Start();
+            Console.Write("fjeo");
+            Console.ReadKey();
+        }*/
 
         /*private void Read()
         {

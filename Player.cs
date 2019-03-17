@@ -8,6 +8,7 @@ namespace Disciples
 {
     class Player:Dude
     {
+        public bool IsBonus = false;
         public Player(int x,int y,int hp,int dmg,char sym)
         {
             X = x;
