@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
+using System.Xml;
 
 namespace Disciples
 {
@@ -13,10 +13,37 @@ namespace Disciples
 
     class Katka
     {
+        public void LoadData()
+        {
+            XmlDocument document = new XmlDocument();
+            document.Load("Data.xml");
+            XmlElement element = document.DocumentElement;
+            foreach (XmlNode node in element)
+            {
+                    ReadData(node);
+            }
+        }
+        public void ReadData(XmlNode node)
+        {
+            foreach (XmlNode kaka in node.ChildNodes)
+            {
+                switch (kaka.Name)
+                {
+                    case "Width":
+                        w = int.Parse(kaka.InnerText);
+                        break;
+                    case "Height":
+                        h = int.Parse(kaka.InnerText);
+                        break;
+                }
+            }
+        }
         public Katka()
         {
         }
 
+        public int w;
+        public int h;
         public Bonus bonus;
         public Dude dude;
         public Field field;
@@ -24,16 +51,18 @@ namespace Disciples
         public Foes enemy;
         public PlayerInputManager inputManager;
         public EnemyAI ai;
-        public Timer timer;
+        public List<Bonus> bonuses;
 
         private void Init(GameInitData gameInitData)
         {
+            LoadData();
+            LoadDataField();
             Randomchik.Init();
             inputManager = new PlayerInputManager();
             ai = new EnemyAI();
             dude = new Dude();
             field = new Field();
-            timer = new Timer(25, 10);
+            bonuses = new List<Bonus>();
             Instantiate();
             FieldInit();
 
@@ -42,6 +71,100 @@ namespace Disciples
             InitEnemy();
 
             InitBonus();
+            AddBonus();
+            RandomizeBonus();
+        }
+
+        private void RandomizeBonus()
+        {
+            int value = Randomchik.Next(0, 3);
+            bonus = new Bonus(bonuses[value]);
+        }
+
+        private void LoadDataField()
+        {
+            field = new Field(w, h);
+        }
+
+        private void AddBonus()
+        {
+            XmlDocument document = new XmlDocument();
+            document.Load("Bonuses.xml");
+            XmlElement element = document.DocumentElement;
+            foreach(XmlNode node in element)
+            {
+                bonuses.Add(ReadXmlBonus(node));
+            }
+        }
+
+        private Bonus ReadXmlBonus(XmlNode node)
+        {
+            Bonus b = new Bonus();
+            foreach(XmlNode huy in node.ChildNodes)
+            {
+                switch (huy.Name)
+                {
+                    case "name":
+                        string name = huy.InnerText;
+                        switch (name)
+                        {
+                            case "invulnerability":
+                            case "SHeal":
+                            case "MHeal":
+                            case "BHeal":
+                                b.name = name;
+                                break;
+                            default:
+                                throw new Exception("!!!Что-то не так с именами бонуса!!!");
+                        }
+                        break;
+                    case "FColor":
+                        string FColor = huy.InnerText;
+                        switch (FColor)
+                        {
+                            case "White":
+                                b.FColor = ConsoleColor.White;
+                                break;
+                            case "Green":
+                                b.FColor = ConsoleColor.Green;
+                                break;
+
+                            default:
+                                throw new Exception("!!!Что-то не так с ForegroundColor бонуса!!!");
+                        }
+                        break;
+                    case "BColor":
+                        string BColor = huy.InnerText;
+                        switch (BColor)
+                        {
+                            case "Black":
+                                b.BColor = ConsoleColor.Black;
+                                break;
+                            case "DarkGreen":
+                                b.BColor = ConsoleColor.DarkGreen;
+                                break;
+                            case "Red":
+                                b.BColor = ConsoleColor.Red;
+                                break;
+                            case "Yellow":
+                                b.BColor = ConsoleColor.Yellow;
+                                break;
+                            default:
+                                throw new Exception("!!!Что-то не так с Background color бонуса!!!");
+                        }
+                        break;
+                    case "IsInvulnerability":
+                        b.IsInvulnerability = true;
+                        break;
+                    case "Heal":
+                        int hp = int.Parse(huy.InnerText);
+                        b.AddHp = hp;
+                        break;
+                    default:
+                        throw new Exception("!!!Что-то не так с huy!!!");
+                }
+            }
+                return b;
         }
 
         /*private void InitTimer(int seconds)
@@ -80,7 +203,7 @@ namespace Disciples
             {
                 x = Randomchik.Next(0, field.Width);
                 y = Randomchik.Next(0, field.Height);
-            } while (x == player.X && x == enemy.X && y == player.Y && y == enemy.Y);
+            } while ((x == player.X && y == player.Y) || (x == enemy.X  && y == enemy.Y));
             bonus = new Bonus(x, y);
         }
 
@@ -91,7 +214,8 @@ namespace Disciples
         public void StartGame()
         {
             Init(new GameInitData());
-
+            //ReadXmlBonus();
+            
             while (!IsEndGame(player))
             {
                 AI();
@@ -107,31 +231,37 @@ namespace Disciples
                 System.Threading.Thread.Sleep(100);
             }
             Console.Clear();
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("You died");
         }
 
-        private void ShowTimer()
+        /*private void ShowTimer()
         {
             while (player.IsBonus == true)
             {
                 timer.InitTimer(20);
             }
             player.IsBonus = false;
-        }
+        }*/
 
         private void IsEatBonus()
         {
+            if (player.X == bonus.X && player.Y == bonus.Y && !player.IsBonus)
+                bonus.Activate(ref player.IsBonus,ref player.Hp);
+        }
+
+        private bool IsEat()
+        {
             if (player.X == bonus.X && player.Y == bonus.Y)
-            {
-                ShowTimer();
-                player.IsBonus = true;
-            }
+                return true;
+
+            return false;
         }
 
         private bool IsCatch()
         {
-            if (enemy.X == player.X && enemy.Y == player.Y && !player.IsBonus) 
+            if (enemy.X == player.X && enemy.Y == player.Y && !bonus.IsInvulnerability) 
                 return true;
 
             return false;
@@ -193,17 +323,17 @@ namespace Disciples
                         player.Draw();
                         continue;
                     }
-                    else if (i == enemy.X && j == enemy.Y)
+                    if (i == enemy.X && j == enemy.Y)
                     {
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.ForegroundColor = ConsoleColor.Black;
                         enemy.Draw();
                         continue;
                     }
-                    else if (i == bonus.X && j == bonus.Y&&!player.IsBonus)
+                    if (i == bonus.X && j == bonus.Y&&!player.IsBonus)
                     {
-                        Console.BackgroundColor = ConsoleColor.Green;
-                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = bonus.BColor;
+                        Console.ForegroundColor = bonus.FColor;
                         bonus.DrawBonus();
                         continue;
                     }
@@ -222,15 +352,16 @@ namespace Disciples
 
             if (IsCatch())
                 Console.ForegroundColor = ConsoleColor.Red;
+
+            if (IsEat())
+                Console.ForegroundColor = ConsoleColor.Green;
+
             player.ShowHP();
         }
 
         private bool IsEndGame(Player P)
         {
-            if (P.Hp <= 0)
-                return true;
-
-            return false;
+            return P.Hp <= 0;
         }
     }
 }

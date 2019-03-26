@@ -16,7 +16,7 @@ namespace Disciples
 
         public virtual bool CanMoveTo(int x,int y,int width,int height)
         {
-            if (x < 0 || y < 0 || x > width || y > height)
+            if (x < 0 || y < 0 || x >= width || y >= height)
                 return false;
 
             return true;

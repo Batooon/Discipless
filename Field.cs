@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Disciples
 {
-    class Field
+    public class Field
     {
         public char[,] field;
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        public int Width;
+        public int Height;
         public int number = 1;
+
+        public Field(int w,int h)
+        {
+            field = new char[w, h];
+        }
 
         public Field()
         {
-            Width = 8;
-            Height = 8;
 
-            field = new char[Width, Height];
-            //GenerateField();
         }
     }
 }

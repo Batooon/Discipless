@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+
 
 namespace Disciples
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
