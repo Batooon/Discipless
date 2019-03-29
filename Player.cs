@@ -8,6 +8,8 @@ namespace Disciples
 {
     class Player:Dude
     {
+
+        public int score = 0;
         public bool IsBonus = false;
         public Player(int x,int y,int hp,int dmg,char sym)
         {
@@ -30,6 +32,11 @@ namespace Disciples
         public void ShowHP()
         {
             Console.Write("HP: " + Hp);
+        }
+
+        public void ShowScore()
+        {
+            Console.Write("Score: " + score);
         }
 
     }

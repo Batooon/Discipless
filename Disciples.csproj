@@ -48,6 +48,7 @@
     <Compile Include="EnemyAI.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Foes.cs" />
+    <Compile Include="Food.cs" />
     <Compile Include="PlayerInputManager.cs" />
     <Compile Include="Katka.cs" />
     <Compile Include="Player.cs" />

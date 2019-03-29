@@ -16,6 +16,7 @@ namespace Disciples
         {
         }
 
+        public Food food;
         public Bonus bonus;
         public Dude dude;
         public Field field;
@@ -45,12 +46,24 @@ namespace Disciples
 
             InitBonus();
             RandomizeBonus();
+            InitFood();
         }
 
         private void RandomizeBonus()
         {
             int value = Randomchik.Next(0, 3);
             bonus = new Bonus(bonuses[value]);
+        }
+        private void InitFood()
+        {
+            int x, y;
+
+            do
+            {
+                x = Randomchik.Next(0, WidthOfMap);
+                y = Randomchik.Next(0, HeightOfMap);
+            } while ((x == player.X && y == player.Y) || (x == enemy.X && y == enemy.Y) || (x == bonus.X && y == bonus.Y));
+            food = new Food(x, y);
         }
 
         private void InitEnemy()
@@ -93,6 +106,7 @@ namespace Disciples
                 PlayerUpdate();
                 Attack();
                 IsEatBonus();
+                IsEatFood();
 
                 Console.Clear();
                 Draw();
@@ -106,6 +120,12 @@ namespace Disciples
             StartNewGame();
         }
 
+        private void IsEatFood()
+        {
+            if (player.X == food.X && player.Y == food.Y)
+                food.UpdateScore(ref player.score);
+        }
+
         private void IsEatBonus()
         {
             if (player.X == bonus.X && player.Y == bonus.Y && !player.IsBonus)
@@ -116,6 +136,17 @@ namespace Disciples
         {
             if (player.X == bonus.X && player.Y == bonus.Y)
                 return true;
+
+            return false;
+        }
+
+        private bool IsFood()
+        {
+            if (player.X == food.X && player.Y == food.Y)
+            {
+                InitFood();
+                return true;
+            }
 
             return false;
         }
@@ -198,6 +229,12 @@ namespace Disciples
                         bonus.DrawBonus();
                         continue;
                     }
+                    if (i == food.X && j == food.Y)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        food.DrawFood();
+                        continue;
+                    }
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.Write(field.field[i, j]);
@@ -205,6 +242,8 @@ namespace Disciples
                 Console.WriteLine();
             }
             ShowHP();
+            Console.WriteLine();
+            ShowScore();
         }
 
         private void ShowHP()
@@ -218,6 +257,16 @@ namespace Disciples
                 Console.ForegroundColor = ConsoleColor.Green;
 
             player.ShowHP();
+        }
+
+        private void ShowScore()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (IsFood())
+                Console.ForegroundColor = ConsoleColor.Green;
+
+            player.ShowScore();
         }
 
         private bool IsEndGame(Player P)
