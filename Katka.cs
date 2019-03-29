@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace Disciples
 {
@@ -13,37 +12,10 @@ namespace Disciples
 
     class Katka
     {
-        public void LoadData()
-        {
-            XmlDocument document = new XmlDocument();
-            document.Load("Data.xml");
-            XmlElement element = document.DocumentElement;
-            foreach (XmlNode node in element)
-            {
-                    ReadData(node);
-            }
-        }
-        public void ReadData(XmlNode node)
-        {
-            foreach (XmlNode kaka in node.ChildNodes)
-            {
-                switch (kaka.Name)
-                {
-                    case "Width":
-                        w = int.Parse(kaka.InnerText);
-                        break;
-                    case "Height":
-                        h = int.Parse(kaka.InnerText);
-                        break;
-                }
-            }
-        }
         public Katka()
         {
         }
 
-        public int w;
-        public int h;
         public Bonus bonus;
         public Dude dude;
         public Field field;
@@ -51,27 +23,27 @@ namespace Disciples
         public Foes enemy;
         public PlayerInputManager inputManager;
         public EnemyAI ai;
-        public List<Bonus> bonuses;
+        public static List<Bonus> bonuses = new List<Bonus>();
+        public static int WidthOfMap;
+        public static int HeightOfMap;
 
         private void Init(GameInitData gameInitData)
         {
-            LoadData();
-            LoadDataField();
             Randomchik.Init();
             inputManager = new PlayerInputManager();
             ai = new EnemyAI();
             dude = new Dude();
             field = new Field();
-            bonuses = new List<Bonus>();
             Instantiate();
+            field = new Field(WidthOfMap, HeightOfMap);
             FieldInit();
+
 
             player = new Player(7, 7, 200, 20, '@');
 
             InitEnemy();
 
             InitBonus();
-            AddBonus();
             RandomizeBonus();
         }
 
@@ -81,116 +53,14 @@ namespace Disciples
             bonus = new Bonus(bonuses[value]);
         }
 
-        private void LoadDataField()
-        {
-            field = new Field(w, h);
-        }
-
-        private void AddBonus()
-        {
-            XmlDocument document = new XmlDocument();
-            document.Load("Bonuses.xml");
-            XmlElement element = document.DocumentElement;
-            foreach(XmlNode node in element)
-            {
-                bonuses.Add(ReadXmlBonus(node));
-            }
-        }
-
-        private Bonus ReadXmlBonus(XmlNode node)
-        {
-            Bonus b = new Bonus();
-            foreach(XmlNode huy in node.ChildNodes)
-            {
-                switch (huy.Name)
-                {
-                    case "name":
-                        string name = huy.InnerText;
-                        switch (name)
-                        {
-                            case "invulnerability":
-                            case "SHeal":
-                            case "MHeal":
-                            case "BHeal":
-                                b.name = name;
-                                break;
-                            default:
-                                throw new Exception("!!!Что-то не так с именами бонуса!!!");
-                        }
-                        break;
-                    case "FColor":
-                        string FColor = huy.InnerText;
-                        switch (FColor)
-                        {
-                            case "White":
-                                b.FColor = ConsoleColor.White;
-                                break;
-                            case "Green":
-                                b.FColor = ConsoleColor.Green;
-                                break;
-
-                            default:
-                                throw new Exception("!!!Что-то не так с ForegroundColor бонуса!!!");
-                        }
-                        break;
-                    case "BColor":
-                        string BColor = huy.InnerText;
-                        switch (BColor)
-                        {
-                            case "Black":
-                                b.BColor = ConsoleColor.Black;
-                                break;
-                            case "DarkGreen":
-                                b.BColor = ConsoleColor.DarkGreen;
-                                break;
-                            case "Red":
-                                b.BColor = ConsoleColor.Red;
-                                break;
-                            case "Yellow":
-                                b.BColor = ConsoleColor.Yellow;
-                                break;
-                            default:
-                                throw new Exception("!!!Что-то не так с Background color бонуса!!!");
-                        }
-                        break;
-                    case "IsInvulnerability":
-                        b.IsInvulnerability = true;
-                        break;
-                    case "Heal":
-                        int hp = int.Parse(huy.InnerText);
-                        b.AddHp = hp;
-                        break;
-                    default:
-                        throw new Exception("!!!Что-то не так с huy!!!");
-                }
-            }
-                return b;
-        }
-
-        /*private void InitTimer(int seconds)
-        {
-            if (player.IsBonus == true)
-            {
-                for (int s = seconds; s >= seconds; s--)
-                {
-                    Console.SetCursorPosition(10, 10);
-                    if (s == 0)
-                        Console.ForegroundColor = ConsoleColor.Red;
-
-                    Console.Write($"\r{s}");
-                    System.Threading.Thread.Sleep(1000);
-                }
-            }
-        }*/
-
         private void InitEnemy()
         {
             int x, y;
 
             do
             {
-                x = Randomchik.Next(0, field.Width);
-                y = Randomchik.Next(0, field.Height);
+                x = Randomchik.Next(0, WidthOfMap);
+                y = Randomchik.Next(0, HeightOfMap);
             } while (x == player.X && y == player.Y);
             enemy = new Foes(x, y, 100, 10, '*');
         }
@@ -201,8 +71,8 @@ namespace Disciples
 
             do
             {
-                x = Randomchik.Next(0, field.Width);
-                y = Randomchik.Next(0, field.Height);
+                x = Randomchik.Next(0, WidthOfMap);
+                y = Randomchik.Next(0, HeightOfMap);
             } while ((x == player.X && y == player.Y) || (x == enemy.X  && y == enemy.Y));
             bonus = new Bonus(x, y);
         }
@@ -214,7 +84,6 @@ namespace Disciples
         public void StartGame()
         {
             Init(new GameInitData());
-            //ReadXmlBonus();
             
             while (!IsEndGame(player))
             {
@@ -232,18 +101,10 @@ namespace Disciples
             }
             Console.Clear();
             Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("You died");
+            StartNewGame();
         }
-
-        /*private void ShowTimer()
-        {
-            while (player.IsBonus == true)
-            {
-                timer.InitTimer(20);
-            }
-            player.IsBonus = false;
-        }*/
 
         private void IsEatBonus()
         {
@@ -275,8 +136,8 @@ namespace Disciples
 
         public void FieldInit()
         {
-            for (int i = 0; i < field.Height; i++)
-                for (int j = 0; j < field.Width; j++)
+            for (int i = 0; i < HeightOfMap; i++)
+                for (int j = 0; j < WidthOfMap; j++)
                     field.field[i, j] = ' ';
         }
 
@@ -294,7 +155,7 @@ namespace Disciples
         {
             int newX = player.X + inputManager.ChangeX;
             int newY = player.Y + inputManager.ChangeY;
-            if (player.CanMoveTo(newX, newY,field.Width,field.Height))
+            if (player.CanMoveTo(newX, newY,WidthOfMap,HeightOfMap))
             {
                 player.MoveTo(newX, newY);
             }
@@ -304,7 +165,7 @@ namespace Disciples
         {
             int newX = enemy.X + ai.ChangeX;
             int newY = enemy.Y + ai.ChangeY;
-            if (enemy.CanMoveTo(newX, newY, field.Width, field.Height))
+            if (enemy.CanMoveTo(newX, newY, WidthOfMap, HeightOfMap))
             {
                 enemy.MoveTo(newX, newY);
             }
@@ -312,9 +173,9 @@ namespace Disciples
 
         private void Draw()
         {
-            for (int i = 0; i < field.Width; i++)
+            for (int i = 0; i < WidthOfMap; i++)
             {
-                for (int j = 0; j < field.Height; j++)
+                for (int j = 0; j < HeightOfMap; j++)
                 {
                     if (i == player.X && j == player.Y)
                     {
@@ -362,6 +223,24 @@ namespace Disciples
         private bool IsEndGame(Player P)
         {
             return P.Hp <= 0;
+        }
+
+        private void StartNewGame()
+        {
+            Console.WriteLine("Do you want to start a new game?");
+
+            ConsoleKey key = Console.ReadKey().Key;
+
+            switch (key)
+            {
+                case ConsoleKey.Enter:
+                    StartGame();
+                    break;
+                case ConsoleKey.Backspace:
+                    Console.Clear();
+                    Console.ReadKey();
+                    break;
+            }
         }
     }
 }

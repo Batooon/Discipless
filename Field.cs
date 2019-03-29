@@ -10,9 +10,6 @@ namespace Disciples
     public class Field
     {
         public char[,] field;
-        public int Width;
-        public int Height;
-        public int number = 1;
 
         public Field(int w,int h)
         {
