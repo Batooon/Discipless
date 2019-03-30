@@ -13,14 +13,14 @@ namespace Disciples
         static void Main(string[] args)
         {
             //XML
-            FieldInit();
+            DataInit();
             BonusInit();
 
             Katka game = new Katka();
             game.StartGame();
         }
 
-        private static void FieldInit()
+        private static void DataInit()
         {
             XmlDocument document = new XmlDocument();
             document.Load("Data.xml");
@@ -42,6 +42,9 @@ namespace Disciples
                         break;
                     case "Height":
                         Katka.HeightOfMap = int.Parse(kaka.InnerText);
+                        break;
+                    case "Difficulty":
+                        Katka.Difficuty = kaka.InnerText;
                         break;
                 }
             }

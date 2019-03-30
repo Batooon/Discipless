@@ -27,6 +27,7 @@ namespace Disciples
         public static List<Bonus> bonuses = new List<Bonus>();
         public static int WidthOfMap;
         public static int HeightOfMap;
+        public static string Difficuty;
 
         private void Init(GameInitData gameInitData)
         {
@@ -56,6 +57,21 @@ namespace Disciples
         }
         private void InitFood()
         {
+            int N;
+            switch (Difficuty)
+            {
+                case "Easy":
+                    N = 15;
+                    break;
+                case "Normal":
+                    N = 20;
+                    break;
+                case "Hard":
+                    N = 30;
+                    break;
+                default:
+                    throw new Exception("!!!Что-то не так со сложностью!!!");
+            }
             int x, y;
 
             do
@@ -63,7 +79,7 @@ namespace Disciples
                 x = Randomchik.Next(0, WidthOfMap);
                 y = Randomchik.Next(0, HeightOfMap);
             } while ((x == player.X && y == player.Y) || (x == enemy.X && y == enemy.Y) || (x == bonus.X && y == bonus.Y));
-            food = new Food(x, y);
+            food = new Food(x, y, N);
         }
 
         private void InitEnemy()
@@ -98,7 +114,7 @@ namespace Disciples
         {
             Init(new GameInitData());
             
-            while (!IsEndGame(player))
+            while (!IsEndGame())
             {
                 AI();
                 EnemyUpdate();
@@ -113,17 +129,37 @@ namespace Disciples
 
                 System.Threading.Thread.Sleep(100);
             }
+            StartNewGame();
+        }
+
+        private void Die()
+        {
             Console.Clear();
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("You died");
-            StartNewGame();
+        }
+
+        private bool IsDie()
+        {
+            return player.Hp <= 0;
         }
 
         private void IsEatFood()
         {
             if (player.X == food.X && player.Y == food.Y)
-                food.UpdateScore(ref player.score);
+                UpdateScore(ref player.score);
+        }
+
+        private void UpdateScore(ref int score)
+        {
+                score += 1;
+        }
+
+        private void Win()
+        {
+            Console.Clear();
+            Console.WriteLine("YOU WIN");
         }
 
         private void IsEatBonus()
@@ -134,10 +170,7 @@ namespace Disciples
 
         private bool IsEat()
         {
-            if (player.X == bonus.X && player.Y == bonus.Y)
-                return true;
-
-            return false;
+            return player.X == bonus.X && player.Y == bonus.Y;
         }
 
         private bool IsFood()
@@ -153,10 +186,7 @@ namespace Disciples
 
         private bool IsCatch()
         {
-            if (enemy.X == player.X && enemy.Y == player.Y && !bonus.IsInvulnerability) 
-                return true;
-
-            return false;
+            return enemy.X == player.X && enemy.Y == player.Y && !bonus.IsInvulnerability;
         }
 
         private void Attack()
@@ -269,13 +299,24 @@ namespace Disciples
             player.ShowScore();
         }
 
-        private bool IsEndGame(Player P)
+        private bool IsEndGame()
         {
-            return P.Hp <= 0;
+            if (player.score == food.AmountOfFood)
+            {
+                Win();
+                return true;
+            }
+            if (player.Hp <= 0) 
+            {
+                Die();
+                return true;
+            }
+            return false;
         }
 
         private void StartNewGame()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Do you want to start a new game?");
 
             ConsoleKey key = Console.ReadKey().Key;

@@ -10,6 +10,7 @@ namespace Disciples
     {
         public int X;
         public int Y;
+        public int AmountOfFood;
         public char Show = '*';
 
         public void DrawFood()
@@ -17,15 +18,11 @@ namespace Disciples
             Console.Write(Show);
         }
 
-        public Food(int x,int y)
+        public Food(int x,int y,int n)
         {
             X = x;
             Y = y;
-        }
-
-        public void UpdateScore(ref int score)
-        {
-            score += 1;
+            AmountOfFood = n;
         }
     }
 }
